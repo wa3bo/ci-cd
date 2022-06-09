@@ -60,7 +60,7 @@ before_script:
 Test SSH:
   script:
   # try to connect to your aws server
-  - scp index.html ec2-user@your-server:/home/ec2-user/www
+  - scp index.html ec2-user@y18.196.188.158:/home/ec2-user/www
 
   # try to clone yourself. A *PUBLIC* key paired to the SSH_PRIVATE_KEY was added as deploy key to this repository
   - touch test.md
