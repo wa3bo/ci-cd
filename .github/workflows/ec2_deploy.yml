@@ -5,7 +5,8 @@ on:
     branches: [ master ]
   pull_request:
     branches: [ master ]
-
+  workflow_dispatch:
+  
 jobs:
   deploy:
     runs-on: ubuntu-latest
@@ -13,13 +14,18 @@ jobs:
 
     - uses: actions/checkout@v2
 
-    - name: Create Private Key File & SSH Config
+    - name: Create Private Key File on actions runner
       run: |
-        mkdir -p ~/.ssh/
-        echo "$SSH_KEY" > ~/.ssh/deployment.pem
-        chmod 600 ~/.ssh/deployment.pem
+        'which ssh-agent || ( apt-get update -y && apt-get install openssh-client git -y )'
+        eval $(ssh-agent -s)
+        echo "$SSH_KEY" | tr -d '\r' | ssh-add -
+        mkdir -p ~/.ssh
+        chmod 700 ~/.ssh
+        ssh-keyscan $SSH_HOST >> ~/.ssh/known_hosts
+        chmod 644 ~/.ssh/known_hosts
       env:
         SSH_KEY: ${{ secrets.SSH_DEPLOY_PRIVATE_KEY }}
+        SSH_HOST: ${{ secrets.SSH_DEPLOY_HOST }}
 
     - name: Copy index.html to Server
       run: | 
