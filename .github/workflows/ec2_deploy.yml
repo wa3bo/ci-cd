@@ -16,23 +16,14 @@ jobs:
     - name: Create Private Key File & SSH Config
       run: |
         mkdir -p ~/.ssh/
-        echo "$SSH_KEY" > ~/.ssh/deployment.key
-        chmod 600 ~/.ssh/deployment.key
-        cat >>~/.ssh/config <<END
-        Host deployment
-          HostName $SSH_HOST
-          User $SSH_USER
-          IdentityFile ~/.ssh/deployment.key
-          StrictHostKeyChecking no
-        END
+        echo "$SSH_KEY" > ~/.ssh/deployment.pem
+        chmod 600 ~/.ssh/deployment.pem
       env:
         SSH_KEY: ${{ secrets.SSH_DEPLOY_PRIVATE_KEY }}
-        SSH_USER: ${{ secrets.SSH_DEPLOY_USER }}
-        SSH_HOST: ${{ secrets.SSH_DEPLOY_HOST }}
 
     - name: Copy index.html to Server
       run: | 
-        scp -i ~/.ssh/deployment.key ./index.html $SSH_USER@$SSH_HOST:/home/ec2-user/www
+        scp -i ~/.ssh/deployment.pem ./index.html $SSH_USER@$SSH_HOST:/home/ec2-user/www
       env:
         SSH_USER: ${{ secrets.SSH_DEPLOY_USER }}
         SSH_HOST: ${{ secrets.SSH_DEPLOY_HOST }}
