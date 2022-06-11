@@ -27,6 +27,8 @@ jobs:
         END
       env:
         SSH_KEY: ${{ secrets.SSH_DEPLOY_PRIVATE_KEY }}
+        SSH_USER: ${{ secrets.SSH_DEPLOY_USER }}
+        SSH_HOST: ${{ secrets.SSH_DEPLOY_HOST }}
 
     - name: Copy index.html to Server
       run: | 
